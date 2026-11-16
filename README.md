@@ -40,7 +40,7 @@ Por meio de um formulário, o usuário informa os dados de uma tarefa. O fluxo a
 ## Demonstração do projeto
 
 ### Fluxo de automação
-![Fluxo n8n](docs/imagens/fluxo.n8n.png)
+![Fluxo n8n](docs/imagens/Fluxo.n8n.png)
 
 ### Formulário de cadastro
 ![Formulário](docs/imagens/Formulário.png)
