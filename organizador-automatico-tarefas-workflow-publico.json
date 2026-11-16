@@ -1,0 +1,253 @@
+{
+  "name": "Organizador Automático de Tarefas",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Organizador de Tarefas",
+        "formDescription": "Preencha os campos abaixo para registrar uma nova tarefa. Nosso sistema organizará suas informações automaticamente.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nome da Tarefa",
+              "placeholder": "Estudar SQL Server",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Descrição da Tarefa",
+              "fieldType": "textarea",
+              "placeholder": "Descreva brevemente o que precisa ser feito."
+            },
+            {
+              "fieldLabel": "Categoria",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Estudos"
+                  },
+                  {
+                    "option": "Trabalho"
+                  },
+                  {
+                    "option": "Outros"
+                  },
+                  {
+                    "option": "Pessoal"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Prazo",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "E-mail",
+              "fieldType": "email",
+              "placeholder": "exemplo@email.com",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c9e5888b-7a20-4ea6-8f0a-ceef7deca0c1",
+      "name": "On form submission"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Tarefas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MxFCyu3ZQBzWnFk_Pgfs9dtBsuk7iXLyIJWOSO6Gmwg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $now.toMillis()}}",
+            "Tarefa": "={{ $json['Nome da Tarefa'] }}",
+            "Descrição": "={{ $json['Descrição da Tarefa'] }}",
+            "Categoria": "={{ $json.Categoria }}",
+            "Prazo": "={{ $json.Prazo }}",
+            "Prioridade": "={{ \n  $json[\"Prazo\"]\n    ? Math.ceil((new Date($json[\"Prazo\"]) - new Date()) / (1000 * 60 * 60 * 24)) <= 2\n      ? \"Alta\"\n      : Math.ceil((new Date($json[\"Prazo\"]) - new Date()) / (1000 * 60 * 60 * 24)) <= 7\n        ? \"Média\"\n        : \"Baixa\"\n    : \"Média\"\n}}",
+            "Data de criação": "={{ $now.toFormat('dd/MM/yyyy HH:mm:ss') }}",
+            "Status": "=Pendente",
+            "Email": "={{ $json[\"E-mail\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Tarefa",
+              "displayName": "Tarefa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Descrição",
+              "displayName": "Descrição",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Categoria",
+              "displayName": "Categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Prioridade",
+              "displayName": "Prioridade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Data de criação",
+              "displayName": "Data de criação",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Prazo",
+              "displayName": "Prazo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "9224076c-251e-44db-a270-b490de997864",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['E-mail'] }}",
+        "subject": "Sua tarefa foi cadastrada com sucesso!",
+        "message": "=<h2>Olá! Sua tarefa foi cadastrada. </h2>  <p>Recebemos sua solicitação e registramos tudo em nosso Organizador de Tarefas.</p>  <h3>Detalhes da tarefa:</h3>  <p><strong>Tarefa:</strong>{{ $('On form submission').item.json['Nome da Tarefa'] }}</p>  <p><strong>Categoria:</strong>{{ $('On form submission').item.json.Categoria }}</p>  <p><strong>Prazo:</strong> {{ $('On form submission').item.json.Prazo }}</p>  <hr>  <p>Sua tarefa já está registrada em nosso sistema.</p>  <p><strong>Organizador Automático de Tarefas</strong></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "3dac7711-1c34-44a9-af37-1e680d87e7dc",
+      "name": "Send a message"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3684ac93-de1f-4ba4-8519-bf52c4e7e04b",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "tags": []
+}
