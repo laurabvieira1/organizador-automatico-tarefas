@@ -37,4 +37,18 @@ Por meio de um formulário, o usuário informa os dados de uma tarefa. O fluxo a
 
 **Versão 1.0 — Implementada e testada.**
 
+## Demonstração do projeto
+
+### Fluxo de automação
+![Fluxo n8n](docs/imagens/fluxo-n8n.png)
+
+### Formulário de cadastro
+![Formulário](docs/imagens/formulario.png)
+
+### Registro no Google Sheets
+![Google Sheets](docs/imagens/google-sheets.png)
+
+### Confirmação por e-mail
+![Gmail](docs/imagens/confirmacao-gmail.png)
+
 O projeto poderá receber novas funcionalidades e melhorias em versões futuras.
